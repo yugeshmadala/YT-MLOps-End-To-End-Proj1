@@ -47,9 +47,17 @@ class ModelEvaluation:
         return df 
     
     def _create_dummy_columns(self, df):
+
         logging.info("Creating dummy variables for categorical features")
-        df=pd.get_dummies(df,drop_first=True)
-        return df 
+        high_card_cols = [col for col in df.select_dtypes(include=['object']).columns 
+                      if df[col].nunique() > 100]  
+        if high_card_cols:
+            logging.warning(f"Dropping high-cardinality columns: {high_card_cols}")
+            df = df.drop(columns=high_card_cols)
+    
+        df = pd.get_dummies(df, drop_first=True)
+        return df
+
     
     def _rename_columns(self, df):
         logging.info("Renaming specific columns and casting to int")
@@ -64,7 +72,7 @@ class ModelEvaluation:
     
     def _drop_id_column(self, df):
         logging.info("dropping 'id' column")
-        for '_id' in df.columns:
+        if '_id' in df.columns:
             df = df.drop("_id", axis=1)
         return df 
     

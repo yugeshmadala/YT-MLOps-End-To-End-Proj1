@@ -14,12 +14,12 @@ class SimpleStorageService:
     def __init__(self):
         s3_client=S3Client()
         self.s3_resource=s3_client.s3_resource
-        self.s3_client=s3_client.s3_clinet
+        self.s3_client=s3_client.s3_client 
 
     def s3_key_path_available(self,bucket_name,s3_key) ->bool:
         try:
             bucket=self.get_bucket(bucket_name)
-            file_objects=[file_object for file_object in bucket.objects.filter(Prefix='s3_key')]
+            file_objects=[file_object for file_object in bucket.objects.filter(Prefix=s3_key)]
             return len(file_objects) > 0
         except Exception as e:
             raise MyException(e, sys)
@@ -33,7 +33,7 @@ class SimpleStorageService:
             )
 
             conv_func= lambda: StringIO(func()) if make_readable else func()
-            return conv_func 
+            return conv_func()
         except Exception as e:
             raise MyException(e, sys) from e
         

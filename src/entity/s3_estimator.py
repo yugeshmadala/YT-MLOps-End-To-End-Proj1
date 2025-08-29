@@ -9,12 +9,13 @@ class Proj1Estimator:
     def __init__(self,bucket_name,model_path,):
         self.bucket_name=bucket_name
         self.model_path=model_path 
-        self.s3=SimpleStorageService 
+        self.s3=SimpleStorageService() 
         self.loaded_model:MyModel=None
 
     def is_model_present(self,model_path):
         try:
             return self.s3.s3_key_path_available(bucket_name=self.bucket_name, s3_key=model_path)
+        
         except MyException as e:
             print(e)
             return False
